@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "full" edition only: one-time code autofill. Google Play Protect blocks apps with these
+     permissions when installed from a file manager or browser, so install this edition with adb. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Optional, asked only if you turn on "Also read codes from SMS directly". -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <application>
+        <!-- Finds one-time codes in new notifications. Only works after you allow notification access. -->
+        <service
+            android:name=".OtpListenerService"
+            android:exported="true"
+            android:label="@string/otp_listener_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".SmsOtpReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

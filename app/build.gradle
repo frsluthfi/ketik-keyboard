@@ -1,0 +1,43 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'id.ketik.keyboard'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'id.ketik.keyboard'
+        minSdk 29
+        targetSdk 34
+        versionCode 30
+        versionName '1.30'
+    }
+
+    // full = everything incl. one-time code autofill (install with adb)
+    // lite = no SMS / notification access, installs from a file manager
+    flavorDimensions 'edition'
+    productFlavors {
+        full { dimension 'edition' }
+        lite { dimension 'edition' }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Signed with the debug key so the release APK installs without extra setup.
+            // Replace with your own keystore if you want a separate signing key.
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    androidResources {
+        noCompress 'txt', 'ttf'
+    }
+}
+// No dependencies: the app uses only the Android framework.

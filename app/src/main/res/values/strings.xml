@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ketik Keyboard</string>
+    <string name="otp_listener_label">Ketik one-time code fill</string>
+    <string name="subtype_label">English &amp; Indonesia</string>
+</resources>
