@@ -190,6 +190,7 @@ public final class KetikIME extends InputMethodService implements KeyboardView.L
         main.addView(column, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         main.addView(rightStrip, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT));
         root.addView(main, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        keepAboveNavBar(main);
 
         overlay = new PopupOverlay(this, theme);
         root.addView(overlay, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -378,11 +379,41 @@ public final class KetikIME extends InputMethodService implements KeyboardView.L
         }
     }
 
+    /**
+     * From Android 15, an app targeting API 35+ is laid out edge-to-edge, and that includes the
+     * keyboard window: it reaches under the navigation bar (3-button or gesture). Push the keys up
+     * by the bar's size and fill the space below with the keyboard colour, so the bar sits on top
+     * of a matching strip instead of covering the bottom row.
+     */
+    private void keepAboveNavBar(final View content) {
+        if (Build.VERSION.SDK_INT < 35) return; // older versions place the keyboard above the bar
+        final View navFill = new View(this);
+        navFill.setBackgroundColor(theme.keyboardBg);
+        root.addView(navFill, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, Gravity.BOTTOM));
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            android.graphics.Insets nav = insets.getInsets(android.view.WindowInsets.Type.navigationBars());
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) content.getLayoutParams();
+            if (lp.leftMargin != nav.left || lp.rightMargin != nav.right || lp.bottomMargin != nav.bottom) {
+                lp.leftMargin = nav.left;
+                lp.rightMargin = nav.right;
+                lp.bottomMargin = nav.bottom;
+                content.setLayoutParams(lp);
+                FrameLayout.LayoutParams fl = (FrameLayout.LayoutParams) navFill.getLayoutParams();
+                fl.height = nav.bottom;
+                navFill.setLayoutParams(fl);
+            }
+            return insets;
+        });
+        root.requestApplyInsets();
+    }
+
     private void styleNavBar() {
         try {
             Window w = getWindow().getWindow();
             if (w == null) return;
             w.setNavigationBarColor(theme.keyboardBg);
+            w.setNavigationBarContrastEnforced(false); // no grey band behind 3-button navigation
             if (Build.VERSION.SDK_INT >= 30) {
                 WindowInsetsController c = w.getInsetsController();
                 if (c != null) {
