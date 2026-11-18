@@ -34,7 +34,7 @@
         <!-- Hands one clipboard image to the app you paste into; not readable by anything else. -->
         <provider
             android:name=".ClipProvider"
-            android:authorities="id.ketik.keyboard.clips"
+            android:authorities="id.my.blankpoof.ketik.clips"
             android:exported="false"
             android:grantUriPermissions="true" />
 

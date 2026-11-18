@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace 'id.ketik.keyboard'
+    namespace 'id.my.blankpoof.ketik'
     compileSdk 34
 
     defaultConfig {
-        applicationId 'id.ketik.keyboard'
+        applicationId 'id.my.blankpoof.ketik'
         minSdk 29
         targetSdk 34
-        versionCode 30
-        versionName '1.30'
+        versionCode 32
+        versionName '1.32'
     }
 
     // full = everything incl. one-time code autofill (install with adb)
